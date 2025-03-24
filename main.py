@@ -7,6 +7,8 @@ import time
 
 FACTS_FILE = 'facts.txt'
 
+# Функции загрузки и добавления фактов
+
 def load_facts():
     if not os.path.exists(FACTS_FILE):
         with open(FACTS_FILE, 'w') as f:
@@ -33,9 +35,9 @@ if os.path.exists(lock_file):
             os.kill(old_pid, signal.SIGTERM)
             print(f"Убит старый процесс с PID: {old_pid}")
         except ProcessLookupError:
-            print("Предыдущий процесс не найден.")
+            print("\u041f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0439 \u043f\u0440\u043e\u0446\u0435\u0441\u0441 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d.")
         except PermissionError:
-            print("Нет прав на завершение процесса.")
+            print("\u041d\u0435\u0442 \u043f\u0440\u0430\u0432 \u043d\u0430 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0438\u0435 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0430.")
     os.remove(lock_file)
 
 with open(lock_file, 'w') as f:
@@ -56,6 +58,16 @@ def fact_command(message):
             bot.reply_to(message, random.choice(facts))
         else:
             bot.reply_to(message, 'ниче не знаю')
+
+@bot.message_handler(commands=['stop'])
+def stop_command(message):
+    if message.from_user.username == "vodka_kota":
+        bot.reply_to(message, "Бот останавливается...")
+        if os.path.exists(lock_file):
+            os.remove(lock_file)
+        sys.exit(0)
+    else:
+        bot.reply_to(message, "отъебись")
 
 @bot.message_handler(content_types=['text'])
 def handle_message(msg):
